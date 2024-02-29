@@ -287,8 +287,10 @@ pub async fn main<H: Hooks, M: MigratorTrait>() -> eyre::Result<()> {
     let environment: Environment = cli.environment.unwrap_or_else(resolve_from_env).into();
 
     let config = environment.load()?;
-    if let Some(l) = config.logger.as_ref() {
-        logger::init::<H>(l);
+    if !H::init_logger(&config, &environment)? {
+        if let Some(logger) = config.logger.as_ref() {
+            logger::init::<H>(logger);
+        }
     }
 
     match cli.command {
@@ -366,9 +368,13 @@ pub async fn main<H: Hooks>() -> eyre::Result<()> {
 
     let config = environment.load()?;
 
+    let config = environment.load()?;
     if !H::init_logger(&config, &environment)? {
-        logger::init::<H>(&config.logger);
+        if let Some(logger) = config.logger.as_ref() {
+            logger::init::<H>(logger);
+        }
     }
+
 
     match cli.command {
         Commands::Start {
