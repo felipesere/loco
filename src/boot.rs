@@ -6,8 +6,7 @@ use std::{collections::BTreeMap, sync::Arc};
 use axum::Router;
 #[cfg(feature = "with-db")]
 use sea_orm_migration::MigratorTrait;
-use serde_enabled::Enable;
-use tracing::{info, trace, warn};
+use tracing::{info, trace};
 
 #[cfg(feature = "with-db")]
 use crate::db;
@@ -18,7 +17,6 @@ use crate::{
     controller::ListRoutes,
     environment::Environment,
     errors::Error,
-    logger,
     mailer::{EmailSender, MailerWorker},
     redis,
     task::Tasks,
