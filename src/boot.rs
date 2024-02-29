@@ -182,21 +182,6 @@ pub async fn run_db<H: Hooks, M: MigratorTrait>(
 pub async fn create_context<H: Hooks>(environment: &Environment) -> Result<AppContext> {
     let config = environment.load()?;
 
-    let logger = match config.logger.clone() {
-        Enable::On(logger) => logger,
-        Enable::Off => config::Logger::default(),
-    };
-
-    logger::init::<H>(&logger);
-
-    if logger.pretty_backtrace {
-        std::env::set_var("RUST_BACKTRACE", "1");
-        warn!(
-            "pretty backtraces are enabled (this is great for development but has a runtime cost \
-            for production. disable with `logger.pretty_backtrace` in your config yaml)"
-        );
-    }
-
     #[cfg(feature = "with-db")]
     let db = db::connect(&config.database).await?;
 

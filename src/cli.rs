@@ -283,13 +283,27 @@ pub async fn playground<H: Hooks>() -> Result<AppContext> {
 /// ```
 #[cfg(feature = "with-db")]
 pub async fn main<H: Hooks, M: MigratorTrait>() -> eyre::Result<()> {
+    use serde_enabled::Enable;
+
+    use crate::config::Logger;
+
     let cli = Cli::parse();
     let environment: Environment = cli.environment.unwrap_or_else(resolve_from_env).into();
 
     let config = environment.load()?;
     if !H::init_logger(&config, &environment)? {
-        if let Some(logger) = config.logger.as_ref() {
-            logger::init::<H>(logger);
+        let logger = match config.logger.clone() {
+            Enable::On(logger) => logger,
+            Enable::Off => Logger::default(),
+        };
+        logger::init::<H>(&logger);
+
+        if logger.pretty_backtrace {
+            std::env::set_var("RUST_BACKTRACE", "1");
+            tracing::warn!(
+                "pretty backtraces are enabled (this is great for development but has a runtime cost \
+                for production. disable with `logger.pretty_backtrace` in your config yaml)"
+            );
         }
     }
 
@@ -370,8 +384,18 @@ pub async fn main<H: Hooks>() -> eyre::Result<()> {
 
     let config = environment.load()?;
     if !H::init_logger(&config, &environment)? {
-        if let Some(logger) = config.logger.as_ref() {
-            logger::init::<H>(logger);
+        let logger = match config.logger.clone() {
+            Enable::On(logger) => logger,
+            Enable::Off => Logger::default(),
+        };
+        logger::init::<H>(&logger);
+
+        if logger.pretty_backtrace {
+            std::env::set_var("RUST_BACKTRACE", "1");
+            tracing::warn!(
+                "pretty backtraces are enabled (this is great for development but has a runtime cost \
+                for production. disable with `logger.pretty_backtrace` in your config yaml)"
+            );
         }
     }
 
