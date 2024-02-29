@@ -30,10 +30,15 @@ cfg_if::cfg_if! {
 use clap::{Parser, Subcommand};
 
 use crate::{
-    app::{AppContext, Hooks}, boot::{
+    app::{AppContext, Hooks},
+    boot::{
         create_app, create_context, list_endpoints, run_task, start, RunDbCommand, ServeParams,
         StartMode,
-    }, config::{Config, Logger}, environment::{resolve_from_env, Environment, DEFAULT_ENVIRONMENT}, gen::{self, Component}, logger, Result
+    },
+    config::{Config, Logger},
+    environment::{resolve_from_env, Environment, DEFAULT_ENVIRONMENT},
+    gen::{self, Component},
+    logger, Result,
 };
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
