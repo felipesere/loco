@@ -35,7 +35,7 @@ use crate::{
         create_app, create_context, list_endpoints, run_task, start, RunDbCommand, ServeParams,
         StartMode,
     },
-    config::{Config},
+    config::Config,
     environment::{resolve_from_env, Environment, DEFAULT_ENVIRONMENT},
     gen::{self, Component},
     logger, Result,
