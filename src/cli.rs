@@ -375,7 +375,6 @@ pub async fn main<H: Hooks>() -> eyre::Result<()> {
         }
     }
 
-
     match cli.command {
         Commands::Start {
             worker,
